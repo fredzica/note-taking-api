@@ -1,10 +1,12 @@
-# node-ts-api
+# note-taking-api
 
-A simple template for Typescript Node.js projects serving APIs with Express.
+A note taking app served through a REST API.
 
 ## How to run
 
-The `npm` command is used to run this app.
+This was developed and tests under node.js v16.16.0 and npm v8.11.0.
+
+The `npm` command is used to run this app. Before anything else, run `npm install` to install the dependencies.
 
 - `npm start` starts the node server.
 - `npm test` runs the automated tests.

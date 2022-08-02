@@ -1,7 +1,7 @@
 {
-  "name": "node-ts-api",
+  "name": "note-taking-api",
   "version": "1.0.0",
-  "description": "Simple API template made with Typescript and Node.js.",
+  "description": "A note taking app served through a REST API",
   "main": "index.ts",
   "scripts": {
     "start": "npm run build && node build/src/index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fredzica/node-ts-api.git"
+    "url": "git+https://github.com/fredzica/note-taking-api.git"
   },
   "author": "Frederico Zica",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/fredzica/node-ts-api/issues"
+    "url": "https://github.com/fredzica/note-taking-api/issues"
   },
-  "homepage": "https://github.com/fredzica/node-ts-api#readme",
+  "homepage": "https://github.com/fredzica/note-taking-api#readme",
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/jest": "^28.1.6",
