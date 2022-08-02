@@ -1,14 +1,12 @@
-import sqlite3 from 'sqlite3'
-sqlite3.verbose()
-const db = new sqlite3.Database(':memory:')
+import Database from 'better-sqlite3'
+const db = new Database(':memory:', { verbose: console.log })
 
 /**
  * Creates the DB tables and first rows.
  */
 async function initDb() {
   // ensures serial, in-order execution of SQL
-  db.serialize(() => {
-    db.run(`
+  db.exec(`
     CREATE TABLE user(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
@@ -17,7 +15,7 @@ async function initDb() {
       updated_at TIMESTAMP
     )`)
 
-    db.run(`
+  db.exec(`
     CREATE TABLE note(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id TEXT NOT NULL,
@@ -27,7 +25,7 @@ async function initDb() {
       FOREIGN KEY(user_id) REFERENCES user(id)
     )`)
 
-    db.run(`
+  db.exec(`
     INSERT INTO user(
       username, password_hash
     )
@@ -36,7 +34,7 @@ async function initDb() {
       '$2a$12$iNO5ixBuMZw9uuiSJPQmQ.SUV6.U66iPH4o4SPWPhDAzsA.HwBAry'
     )`)
 
-    db.run(`
+  db.exec(`
     INSERT INTO user(
       username, password_hash
     )
@@ -44,7 +42,6 @@ async function initDb() {
       'test2',
       '$2a$12$xqlLLF1lBvNaDUQD9POTx./ziqzgJ2yvPvMlX47JmLWQGBgUPXga2'
     )`)
-  })
 }
 
 export { initDb, db }

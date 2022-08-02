@@ -1,5 +1,4 @@
 import express from 'express'
-import { RunResult } from 'sqlite3'
 
 import { findUser } from '../db/user'
 
@@ -8,11 +7,8 @@ export async function verifyAuth(
   res: express.Response,
   next: express.NextFunction,
 ) {
-  const callback = (err: Error, row: RunResult) => {
-    console.log('callback', row)
-    res.locals.user = row
+  const user = findUser(1)
+  res.locals.user = user
 
-    next()
-  }
-  const user = await findUser(1, callback)
+  next()
 }

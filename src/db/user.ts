@@ -1,20 +1,27 @@
-import { RunResult } from 'sqlite3'
 import { db } from '../services/db'
 
 interface UserDTO {
   id: number
   username: string
-  password: string
+  passwordHash: string
   createdAt: Date
   updatedAt: Date
 }
 
-async function findUser(
-  id: number,
-  callback: (err: Error, row: RunResult) => void,
-) {
-  const stmt = await db.prepare('SELECT * FROM USER WHERE id = ?')
-  await stmt.get(id, callback).finalize()
+function findUser(id: number): UserDTO | null {
+  const stmt = db.prepare('SELECT * FROM USER WHERE id = ?')
+  const dbUser = stmt.get(id)
+  if (dbUser) {
+    return {
+      id: dbUser.id,
+      username: dbUser.username,
+      passwordHash: dbUser.password_hash,
+      createdAt: dbUser.created_at,
+      updatedAt: dbUser.updated_at,
+    }
+  }
+
+  return null
 }
 
 export { findUser }
