@@ -1,5 +1,5 @@
 import { db } from '../services/db'
-import UserDTO from './UserDTO'
+import UserDTO from '../dto/UserDTO'
 
 /**
  * Finds an user by its id.

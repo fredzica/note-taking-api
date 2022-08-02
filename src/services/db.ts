@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3'
-const db = new Database(':memory:', { verbose: console.log })
+const db = new Database(':memory:')
 
 /**
  * Creates the DB tables and first rows.
@@ -44,8 +44,13 @@ function initDb() {
     )`)
 }
 
+function deleteAllTables() {
+  db.exec('DROP TABLE note')
+  db.exec('DROP TABLE user')
+}
+
 function closeDb() {
   db.close()
 }
 
-export { initDb, closeDb, db }
+export { initDb, closeDb, deleteAllTables, db }
