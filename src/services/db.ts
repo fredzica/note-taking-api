@@ -4,7 +4,7 @@ const db = new Database(':memory:', { verbose: console.log })
 /**
  * Creates the DB tables and first rows.
  */
-async function initDb() {
+function initDb() {
   // ensures serial, in-order execution of SQL
   db.exec(`
     CREATE TABLE user(
@@ -44,4 +44,8 @@ async function initDb() {
     )`)
 }
 
-export { initDb, db }
+function closeDb() {
+  db.close()
+}
+
+export { initDb, closeDb, db }

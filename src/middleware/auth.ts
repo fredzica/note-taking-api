@@ -4,7 +4,7 @@ import { findUser } from '../db/user'
 
 /**
  * Express middleware function to check if the user is authenticated
- * and forward user info.
+ * and forward user info inside res.locals.
  *
  * ATTENTION: This is just a draft of the actual implementation, which would
  * check for a JWT token on the Authentication HTTP header, verify its

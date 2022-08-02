@@ -1,22 +1,16 @@
 import express from 'express'
 
-import { initDb } from './services/db'
-import main from './controllers/main'
+import { closeDb, initDb } from './services/db'
+import notes from './controllers/notes'
 
+// doing the app initialization
 const app = express()
 const port = process.env.PORT || 3000
+app.use('/v1/notes', notes)
 
-app.use('/main', main)
+initDb()
+process.on('exit', () => closeDb())
 
-/**
- * Initializes the application and its parts.
- */
-const init = async () => {
-  await initDb()
-
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
-}
-
-init()
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
