@@ -53,7 +53,7 @@ describe('Notes router', () => {
     expect(response.body).toHaveLength(2)
   })
 
-  it('POST /notes, missing notes field', async () => {
+  it('POST /notes, missing note field', async () => {
     await request(app)
       .post('/notes')
       .send({ wrong: 'element' })
@@ -70,7 +70,33 @@ describe('Notes router', () => {
       .expect('Content-Type', /json/)
       .expect(201)
 
+    // since the user is known and will have only one note,
+    // the below query is safe for now
     const notes = findUserNotes(1)
     expect(response.body).toEqual<NoteDTO>(notes[0])
+  })
+
+  it('PUT /notes, missing note field', async () => {
+    const note1Id = createNote(1, 'in a more serious note')
+
+    const response = await request(app)
+      .put(`/notes/${note1Id}`)
+      .send({ wrong: 'element' })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+
+    console.log(response.body)
+  })
+
+  it('PUT /notes, unexistent note', async () => {
+    const response = await request(app)
+      .put(`/notes/10000`)
+      .send({ note: 'a note' })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(404)
+
+    console.log(response.body)
   })
 })
