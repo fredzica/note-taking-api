@@ -24,15 +24,36 @@ function findNote(id: number | bigint): NoteDTO | null {
   const stmt = db.prepare('SELECT * FROM note WHERE id = ?')
   const dbNote = stmt.get(id)
   if (dbNote) {
-    return {
-      id: dbNote.id,
-      note: dbNote.note,
-      createdAt: dbNote.created_at,
-      updatedAt: dbNote.updated_at,
-    }
+    return convertDbNoteToDTO(dbNote)
   }
 
   return null
 }
 
-export { createNote, findNote }
+/**
+ * Finds notes of a user.
+ * @param userId The note id.
+ * @returns The notes or an empty array if none were found.
+ */
+function findUserNotes(userId: number | bigint): NoteDTO[] {
+  const stmt = db.prepare('SELECT * FROM note WHERE user_id = ?')
+  const dbNotes = stmt.all(userId)
+
+  return dbNotes.map(convertDbNoteToDTO)
+}
+
+function convertDbNoteToDTO(dbNote: {
+  id: number
+  note: string
+  created_at: Date
+  updated_at: Date
+}): NoteDTO {
+  return {
+    id: dbNote.id,
+    note: dbNote.note,
+    createdAt: dbNote.created_at,
+    updatedAt: dbNote.updated_at,
+  }
+}
+
+export { createNote, findNote, findUserNotes }
