@@ -1,12 +1,12 @@
 import express from 'express'
-import { findUserNotes } from '../db/note'
+import { createNote, findUserNotes } from '../db/note'
 import { verifyAuth } from '../middleware/auth'
 
 const router = express.Router()
 
 router.get('/', verifyAuth, (req, res) => {
-  const userId = res.locals?.user?.id
-  const userNotes = userId ? findUserNotes(userId) : []
+  const userId = res.locals.user.id
+  const userNotes = findUserNotes(userId)
 
   res.send(userNotes)
 })

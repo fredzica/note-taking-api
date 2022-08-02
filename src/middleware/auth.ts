@@ -18,6 +18,12 @@ export async function verifyAuth(
   res: express.Response,
   next: express.NextFunction,
 ) {
+  /*
+    TODO: find the JWT in the Authentication HTTP header,
+    verify its signature, retrieve and forward the user.
+    If the token is not present or is invalid, send a 401 response.
+  */
+
   const user = findUser(1)
   res.locals.user = user
 
