@@ -5,14 +5,14 @@ const db = new sqlite3.Database(':memory:')
 /**
  * Creates the DB tables and first rows.
  */
-const initDb = async () => {
+async function initDb() {
   // ensures serial, in-order execution of SQL
   db.serialize(() => {
     db.run(`
     CREATE TABLE user(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
-      password TEXT NOT NULL,
+      password_hash TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP
     )`)
@@ -29,20 +29,20 @@ const initDb = async () => {
 
     db.run(`
     INSERT INTO user(
-      username, password
+      username, password_hash
     )
     VALUES(
       'test1',
-      'pass'
+      '$2a$12$iNO5ixBuMZw9uuiSJPQmQ.SUV6.U66iPH4o4SPWPhDAzsA.HwBAry'
     )`)
 
     db.run(`
     INSERT INTO user(
-      username, password
+      username, password_hash
     )
     VALUES(
       'test2',
-      'pass'
+      '$2a$12$xqlLLF1lBvNaDUQD9POTx./ziqzgJ2yvPvMlX47JmLWQGBgUPXga2'
     )`)
   })
 }
