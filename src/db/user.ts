@@ -1,13 +1,11 @@
 import { db } from '../services/db'
+import UserDTO from './UserDTO'
 
-interface UserDTO {
-  id: number
-  username: string
-  passwordHash: string
-  createdAt: Date
-  updatedAt: Date
-}
-
+/**
+ * Finds an user by its id.
+ * @param id The user id.
+ * @returns The user or null if not found.
+ */
 function findUser(id: number): UserDTO | null {
   const stmt = db.prepare('SELECT * FROM USER WHERE id = ?')
   const dbUser = stmt.get(id)

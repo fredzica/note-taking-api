@@ -8,6 +8,9 @@ const port = process.env.PORT || 3000
 
 app.use('/main', main)
 
+/**
+ * Initializes the application and its parts.
+ */
 const init = async () => {
   await initDb()
 
