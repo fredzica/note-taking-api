@@ -76,6 +76,17 @@ describe('Notes router', () => {
     expect(response.body).toEqual<NoteDTO>(notes[0])
   })
 
+  it('PUT /notes, incorrect id field', async () => {
+    const response = await request(app)
+      .put('/notes/text')
+      .send({ note: 'a note' })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+
+    console.log(response.body)
+  })
+
   it('PUT /notes, missing note field', async () => {
     const note1Id = createNote(1, 'in a more serious note')
 
