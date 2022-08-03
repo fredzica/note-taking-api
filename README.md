@@ -17,3 +17,7 @@ The `npm` command is used to run this app. Before anything else, run `npm instal
 # Rest API
 
 ## GET /main
+
+# Database
+
+![Database Diagram](/note-taking-app-db.drawio.png)
