@@ -1,10 +1,10 @@
 import express from 'express'
 import {
   createNote,
+  deleteNoteByIdAndUser,
   findNote,
-  findNoteByIdAndUser,
   findUserNotes,
-  updateNote,
+  updateNoteByIdAndUser,
 } from '../db/note'
 import { verifyAuth } from '../middleware/auth'
 
@@ -45,22 +45,32 @@ router.put('/:id', verifyAuth, async (req, res) => {
 
   const noteId = Number.parseInt(id)
   const userId = res.locals.user.id
-  const foundNote = findNoteByIdAndUser(noteId, userId)
-  if (!foundNote) {
-    res.status(404).send({ error: 'The note was not found' })
-    return
-  }
-
-  const wasUpdated = updateNote(noteId, note)
+  const wasUpdated = updateNoteByIdAndUser(noteId, userId, note)
   if (!wasUpdated) {
-    res.status(500).send({
-      error: 'An unexpected error prevented the note from being updated',
-    })
+    res.status(404).send({ error: 'The note was not found' })
     return
   }
 
   const updatedNote = findNote(noteId)
   res.status(200).send(updatedNote)
+})
+
+router.delete('/:id', verifyAuth, async (req, res) => {
+  const id = req.params['id']
+  if (!id || !Number.parseInt(id)) {
+    res.status(400).send({ error: "The 'id' field is incorrect or missing" })
+    return
+  }
+
+  const noteId = Number.parseInt(id)
+  const userId = res.locals.user.id
+  const wasDeleted = deleteNoteByIdAndUser(noteId, userId)
+  if (!wasDeleted) {
+    res.status(404).send({ error: 'The note was not found' })
+    return
+  }
+
+  res.status(204).json(null)
 })
 
 export default router

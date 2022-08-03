@@ -18,18 +18,45 @@ function createNote(userId: number, note: string): number | bigint {
 /**
  * Updates a note.
  * @param id The note id.
+ * @param userId The user id.
  * @param note The note text.
  * @returns If a note was updated
  */
-function updateNote(id: number, note: string): boolean {
+function updateNoteByIdAndUser(
+  id: number,
+  userId: number,
+  note: string,
+): boolean {
   const stmt = db.prepare(
-    `UPDATE note SET note = :note, updated_at = :updatedAt where id = :id`,
+    `UPDATE note SET note = :note, updated_at = :updatedAt WHERE id = :id AND user_id = :userId`,
   )
-  const result = stmt.run({ note, id, updatedAt: Date.now() })
+  const result = stmt.run({ note, id, userId, updatedAt: Date.now() })
 
   if (result.changes > 1) {
     throw new Error(
-      `Somehow the update on a note with id ${id}
+      `Somehow the update on a note with id ${id} and userId ${userId}
+      resulted in many rows updated. Please check what happened`,
+    )
+  }
+
+  return result.changes === 1
+}
+
+/**
+ * Deletes a note.
+ * @param id The note id.
+ * @param userId The user id.
+ * @returns If a note was updated
+ */
+function deleteNoteByIdAndUser(id: number, userId: number): boolean {
+  const stmt = db.prepare(
+    `DELETE FROM note WHERE id = :id AND user_id = :userId`,
+  )
+  const result = stmt.run({ id, userId })
+
+  if (result.changes > 1) {
+    throw new Error(
+      `Somehow the delete on a note with id ${id} and userId ${userId}
       resulted in many rows updated. Please check what happened`,
     )
   }
@@ -63,21 +90,6 @@ function findUserNotes(userId: number | bigint): NoteDTO[] {
   return dbNotes.map(convertDbNoteToDTO)
 }
 
-/**
- * Finds a note by its id and its user.
- * @param id The note id.
- * @param userId The note id.
- * @returns The note or null if not found.
- */
-function findNoteByIdAndUser(id: number, userId: number): NoteDTO | null {
-  const stmt = db.prepare(
-    'SELECT * FROM note WHERE id = :id and user_id = :userId',
-  )
-
-  const dbNote = stmt.get({ id, userId })
-  return dbNote ? convertDbNoteToDTO(dbNote) : null
-}
-
 function convertDbNoteToDTO(dbNote: {
   id: number
   note: string
@@ -92,4 +104,10 @@ function convertDbNoteToDTO(dbNote: {
   }
 }
 
-export { createNote, findNote, updateNote, findUserNotes, findNoteByIdAndUser }
+export {
+  createNote,
+  findNote,
+  updateNoteByIdAndUser,
+  deleteNoteByIdAndUser,
+  findUserNotes,
+}
