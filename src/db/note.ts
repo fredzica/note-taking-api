@@ -55,7 +55,9 @@ function findNote(id: number | bigint): NoteDTO | null {
  * @returns The notes or an empty array if none were found.
  */
 function findUserNotes(userId: number | bigint): NoteDTO[] {
-  const stmt = db.prepare('SELECT * FROM note WHERE user_id = ?')
+  const stmt = db.prepare(
+    'SELECT * FROM note WHERE user_id = ? ORDER BY created_at DESC',
+  )
   const dbNotes = stmt.all(userId)
 
   return dbNotes.map(convertDbNoteToDTO)
