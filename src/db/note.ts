@@ -16,6 +16,28 @@ function createNote(userId: number, note: string): number | bigint {
 }
 
 /**
+ * Updates a note.
+ * @param id The note id.
+ * @param note The note text.
+ * @returns If a note was updated
+ */
+function updateNote(id: number, note: string): boolean {
+  const stmt = db.prepare(
+    `UPDATE note SET note = :note, updated_at = :updatedAt where id = :id`,
+  )
+  const result = stmt.run({ note, id, updatedAt: Date.now() })
+
+  if (result.changes > 1) {
+    throw new Error(
+      `Somehow the update on a note with id ${id}
+      resulted in many rows updated. Please check what happened`,
+    )
+  }
+
+  return result.changes === 1
+}
+
+/**
  * Finds a note by its id.
  * @param id The note id.
  * @returns The note or null if not found.
@@ -23,16 +45,13 @@ function createNote(userId: number, note: string): number | bigint {
 function findNote(id: number | bigint): NoteDTO | null {
   const stmt = db.prepare('SELECT * FROM note WHERE id = ?')
   const dbNote = stmt.get(id)
-  if (dbNote) {
-    return convertDbNoteToDTO(dbNote)
-  }
 
-  return null
+  return dbNote ? convertDbNoteToDTO(dbNote) : null
 }
 
 /**
  * Finds notes of a user.
- * @param userId The note id.
+ * @param userId The user id.
  * @returns The notes or an empty array if none were found.
  */
 function findUserNotes(userId: number | bigint): NoteDTO[] {
@@ -40,6 +59,21 @@ function findUserNotes(userId: number | bigint): NoteDTO[] {
   const dbNotes = stmt.all(userId)
 
   return dbNotes.map(convertDbNoteToDTO)
+}
+
+/**
+ * Finds a note by its id and its user.
+ * @param id The note id.
+ * @param userId The note id.
+ * @returns The note or null if not found.
+ */
+function findNoteByIdAndUser(id: number, userId: number): NoteDTO | null {
+  const stmt = db.prepare(
+    'SELECT * FROM note WHERE id = :id and user_id = :userId',
+  )
+
+  const dbNote = stmt.get({ id, userId })
+  return dbNote ? convertDbNoteToDTO(dbNote) : null
 }
 
 function convertDbNoteToDTO(dbNote: {
@@ -56,4 +90,4 @@ function convertDbNoteToDTO(dbNote: {
   }
 }
 
-export { createNote, findNote, findUserNotes }
+export { createNote, findNote, updateNote, findUserNotes, findNoteByIdAndUser }

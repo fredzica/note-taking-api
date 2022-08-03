@@ -122,7 +122,7 @@ describe('Notes router', () => {
       fail('Did not find updated note')
     }
 
-    expect(foundNote).toEqual(newNote)
+    expect(foundNote.note).toEqual(newNote)
     expect(response.body).toEqual<NoteDTO>(foundNote)
   })
 })
