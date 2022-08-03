@@ -77,37 +77,52 @@ describe('Notes router', () => {
   })
 
   it('PUT /notes, incorrect id field', async () => {
-    const response = await request(app)
+    await request(app)
       .put('/notes/text')
       .send({ note: 'a note' })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(400)
-
-    console.log(response.body)
   })
 
   it('PUT /notes, missing note field', async () => {
     const note1Id = createNote(1, 'in a more serious note')
 
-    const response = await request(app)
+    await request(app)
       .put(`/notes/${note1Id}`)
       .send({ wrong: 'element' })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(400)
-
-    console.log(response.body)
   })
 
   it('PUT /notes, unexistent note', async () => {
-    const response = await request(app)
+    await request(app)
       .put(`/notes/10000`)
       .send({ note: 'a note' })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(404)
+  })
 
-    console.log(response.body)
+  it('PUT /notes, updates a note', async () => {
+    const note1Id = createNote(1, 'a nice note')
+
+    const newNote = 'a memorable note'
+
+    const response = await request(app)
+      .put(`/notes/${note1Id}`)
+      .send({ note: newNote })
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    const foundNote = findNote(note1Id)
+    if (!foundNote) {
+      fail('Did not find updated note')
+    }
+
+    expect(foundNote).toEqual(newNote)
+    expect(response.body).toEqual<NoteDTO>(foundNote)
   })
 })
