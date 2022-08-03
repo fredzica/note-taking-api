@@ -70,7 +70,7 @@ router.delete('/:id', verifyAuth, async (req, res) => {
     return
   }
 
-  res.status(204).json(null)
+  res.status(204).send()
 })
 
 export default router

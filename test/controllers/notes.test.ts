@@ -107,6 +107,8 @@ describe('Notes router', () => {
 
   it('PUT /notes, updates a note', async () => {
     const note1Id = createNote(1, 'a nice note')
+    createNote(1, 'another nice note')
+    createNote(2, 'another users note')
 
     const newNote = 'a memorable note'
 
@@ -124,5 +126,38 @@ describe('Notes router', () => {
 
     expect(foundNote.note).toEqual(newNote)
     expect(response.body).toEqual<NoteDTO>(foundNote)
+  })
+
+  it('DELETE /notes, incorrect id field', async () => {
+    await request(app)
+      .delete('/notes/text')
+      .send()
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(400)
+  })
+
+  it('DELETE /notes, unexistent note', async () => {
+    await request(app)
+      .delete(`/notes/10000`)
+      .send()
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(404)
+  })
+
+  it('DELETE /notes, deletes a note', async () => {
+    createNote(1, 'a nice note')
+    const note1Id = createNote(1, 'another nice note')
+    createNote(2, 'another users note')
+
+    await request(app)
+      .delete(`/notes/${note1Id}`)
+      .send()
+      .set('Accept', 'application/json')
+      .expect(204)
+
+    const foundNote = findNote(note1Id)
+    expect(foundNote).toBeNull()
   })
 })
